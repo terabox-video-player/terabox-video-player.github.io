@@ -194,7 +194,7 @@
         const pauseAd = document.getElementById('pause-ad');
         const loader = document.getElementById('loading-spinner');
 
-                        window.onload = async () => {
+                                window.onload = async () => {
             const videoSrc = sessionStorage.getItem('videoSource');
             if (videoSrc) {
                 loader.classList.remove('hidden');
@@ -209,13 +209,33 @@
                     const data = await response.json();
                     
                     if (data && data.found === true && data.result && data.result.data && data.result.data[0]) {
-                        video.src = data.result.data[0].stream_url;
-                        video.play();
-                        playIcon.classList.add('hidden');
-                        pauseIcon.classList.remove('hidden');
+                        const finalStreamUrl = data.result.data[0].stream_url;
+                        
+                        // व्हिडिओ फास्ट प्ले आणि बफरिंग कमी करण्यासाठी नवीन सेटिंग्ज
+                        video.removeAttribute('src'); 
+                        video.crossOrigin = "anonymous";
+                        video.preload = "auto"; // बॅकग्राउंडला फास्ट लोडिंग चालू ठेव
+                        video.setAttribute('playsinline', ''); 
+                        
+                        // डिकोड करण्याचा जुगाड
+                        video.innerHTML = `<source src="${finalStreamUrl}" type="video/mp4">`;
+                        video.load(); 
+                        
+                        let playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(_ => {
+                                playIcon.classList.add('hidden');
+                                pauseIcon.classList.remove('hidden');
+                            }).catch(error => {
+                                console.log("Auto-play prevented by browser", error);
+                            });
+                        }
+                        
                         document.getElementById('video-title').textContent = data.result.file_name;
-                    } else if (data && data.url) {
+                    } 
+                    else if (data && data.url) {
                         video.src = data.url;
+                        video.preload = "auto"; // इथे पण फास्ट लोडिंग
                         video.play();
                         playIcon.classList.add('hidden');
                         pauseIcon.classList.remove('hidden');
