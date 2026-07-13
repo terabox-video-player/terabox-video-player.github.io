@@ -3,98 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Fast Terabox Video Player Online. Watch videos without downloading.">
-    <meta name="keywords" content="Terabox Video Player Online, Fast Terabox Player, Play Terabox, Watch Terabox Online">
-    <title>Terabox Video Player</title>
+    <title>TERABOX LINK PLAYER</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0f172a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-        }
-        h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #38bdf8;
-        }
-        .video-container {
-            width: 90%;
-            max-width: 800px;
-            aspect-ratio: 16/9;
-            background-color: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            position: relative;
-            border: 2px solid #1e293b;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #94a3b8;
-            text-align: center;
-        }
-        .loading-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #94a3b8;
-            font-size: 16px;
-        }
+        body { font-family: sans-serif; background: #fdfdfd; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .hero { text-align: center; padding: 40px 20px; }
+        .input-section { background: #064e3b; padding: 25px; border-radius: 20px; width: 90%; max-width: 600px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: none; margin-bottom: 15px; box-sizing: border-box; }
+        .play-btn { width: 100%; padding: 18px; background: #fbbf24; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; color: #064e3b; }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h1>Terabox Video Player</h1>
+    <div class="hero">
+        <h1>Play TeraBox Links Instantly</h1>
     </div>
-
-    <div class="video-container">
-        <div id="loadingText" class="loading-text">Loading Video...</div>
-        <iframe id="videoPlayer" src="" allowfullscreen></iframe>
-    </div>
-
-    <div class="footer">
-        <p>Powered by Latest Files Drop Bot</p>
+    <div class="input-section">
+        <p>Paste Your TeraBox Link</p>
+        <input type="text" id="urlInput" placeholder="https://www.terabox.com/...">
+        <button class="play-btn" onclick="goToPlayer()">Play Now</button>
     </div>
 
     <script>
-        // लिंकमधून व्हिडिओची URL काढण्यासाठी
-        function getQueryParam(param) {
-            let urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
-
-        let videoUrl = getQueryParam('url');
-        let player = document.getElementById('videoPlayer');
-        let loadingText = document.getElementById('loadingText');
-
-        if (videoUrl) {
-            player.src = videoUrl;
-            player.onload = function() {
-                loadingText.style.display = 'none';
-            };
-        } else {
-            loadingText.innerText = "Please provide a valid video link!";
+        function goToPlayer() {
+            let url = document.getElementById('urlInput').value;
+            if(url) {
+                // युझरला प्लेअर पेजवर पाठवण्यासाठी
+                window.location.href = "player.html?url=" + encodeURIComponent(url);
+            }
         }
     </script>
-
 </body>
 </html>
