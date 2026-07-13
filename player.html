@@ -184,6 +184,8 @@
     </div>
 
         <script>
+                var player; 
+
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
         const progressBar = document.getElementById('progress-bar');
@@ -206,7 +208,7 @@
                     
                     if (data && data.result && data.result.data[0]) {
                         const streamUrl = data.result.data[0].stream_url;
-                        var player = videojs('main-video');
+                        player = videojs('main-video');
                         player.src({ src: streamUrl, type: 'video/mp4' });
                         player.play();
                         document.getElementById('video-title').textContent = data.result.file_name;
@@ -223,8 +225,8 @@
         function goBack() { if (window.history.length > 1) window.history.back(); else alert("This is the main page."); }
         function showNotice(featureName) { alert(featureName + " will be available soon."); }
         
-        function togglePlay() { 
-            var player = videojs('main-video');
+                function togglePlay() { 
+            // पुन्हा videojs लोड करण्याची गरज नाही, थेट ग्लोबल player वापर
             if (player.paused()) { 
                 player.play(); 
                 playIcon.classList.add('hidden'); 
@@ -238,9 +240,10 @@
             } 
         }
         
-        function skip(seconds) { var player = videojs('main-video'); player.currentTime(player.currentTime() + seconds); }
+        // इथूनही var player = ... काढून टाकले आहे
+        function skip(seconds) { player.currentTime(player.currentTime() + seconds); }
         
-        function toggleMute() { var player = videojs('main-video'); player.muted(!player.muted()); }
+        function toggleMute() { player.muted(!player.muted()); }
         
         async function togglePiP() { 
             var videoEl = document.getElementById('main-video');
