@@ -183,8 +183,7 @@
         <span class="text-slate-400 text-[8px] md:text-[10px]">(Bottom Banner Space)</span>
     </div>
 
-    <script>
-        const video = document.getElementById('main-video');
+        <script>
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
         const progressBar = document.getElementById('progress-bar');
@@ -197,45 +196,63 @@
         const pauseAd = document.getElementById('pause-ad');
         const loader = document.getElementById('loading-spinner');
 
-                                        window.onload = async () => {
+        window.onload = async () => {
             const videoSrc = sessionStorage.getItem('videoSource');
             if (videoSrc) {
                 loader.classList.remove('hidden');
                 try {
-                    const response = await fetch(videoSrc, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'User-Agent': 'Mozilla/5.0'
-                        }
-                    });
-                    
+                    const response = await fetch(videoSrc, { headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' } });
                     const data = await response.json();
                     
-                                        if (data && data.result && data.result.data[0]) {
+                    if (data && data.result && data.result.data[0]) {
                         const streamUrl = data.result.data[0].stream_url;
                         var player = videojs('main-video');
                         player.src({ src: streamUrl, type: 'video/mp4' });
                         player.play();
                         document.getElementById('video-title').textContent = data.result.file_name;
-                                        }                
-
-
+                    } else {
+                        alert("API Error: " + JSON.stringify(data));
+                    }
+                } catch (error) { 
+                    console.error("Fetch Error:", error); 
+                    alert("Network Error: " + error.message);
+                } finally { loader.classList.add('hidden'); }
+            }
+        };
 
         function goBack() { if (window.history.length > 1) window.history.back(); else alert("This is the main page."); }
         function showNotice(featureName) { alert(featureName + " will be available soon."); }
-        function toggleOverlay() { if (window.innerWidth < 768) { if (overlay.style.opacity == "0" || overlay.style.opacity == "") { overlay.style.opacity = "1"; setTimeout(() => { if(!video.paused) overlay.style.opacity = "0"; }, 3500); } else { if(!video.paused) overlay.style.opacity = "0"; } } }
-        function togglePlay() { if (video.paused) { video.play(); playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); pauseAd.classList.add('hidden'); pauseAd.classList.remove('flex'); if (window.innerWidth < 768) overlay.style.opacity = "0"; } else { video.pause(); playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); overlay.style.opacity = "1"; pauseAd.classList.remove('hidden'); pauseAd.classList.add('flex'); } }
-        video.addEventListener('click', togglePlay);
-        function skip(seconds) { video.currentTime += seconds; }
-        function formatTime(seconds) { if(isNaN(seconds)) return "00:00"; const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); const s = Math.floor(seconds % 60); if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
-        video.addEventListener('timeupdate', () => { const progress = (video.currentTime / video.duration) * 100; progressBar.value = progress || 0; currentTimeEl.textContent = formatTime(video.currentTime); });
-        video.addEventListener('loadedmetadata', () => { durationTimeEl.textContent = formatTime(video.duration); });
-        progressBar.addEventListener('input', (e) => { const seekTime = (e.target.value / 100) * video.duration; video.currentTime = seekTime; });
-        if(volHoriz) { volHoriz.addEventListener('input', (e) => { video.volume = e.target.value; video.muted = (e.target.value === "0"); }); }
-        function toggleMute() { video.muted = !video.muted; if(video.muted) volHoriz.value = 0; else volHoriz.value = video.volume || 1; }
-        if(brightSlider) { brightSlider.addEventListener('input', (e) => { video.style.filter = `brightness(${e.target.value}%)`; }); }
-        async function togglePiP() { try { if (video !== document.pictureInPictureElement) await video.requestPictureInPicture(); else await document.exitPictureInPicture(); } catch (error) { alert("Picture-in-Picture mode is not supported."); } }
-        function toggleFullscreen() { if (!document.fullscreenElement) { if (wrapper.requestFullscreen) wrapper.requestFullscreen(); else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen(); if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } }
+        
+        function togglePlay() { 
+            var player = videojs('main-video');
+            if (player.paused()) { 
+                player.play(); 
+                playIcon.classList.add('hidden'); 
+                pauseIcon.classList.remove('hidden'); 
+                pauseAd.classList.add('hidden');
+            } else { 
+                player.pause(); 
+                playIcon.classList.remove('hidden'); 
+                pauseIcon.classList.add('hidden'); 
+                pauseAd.classList.remove('hidden'); 
+            } 
+        }
+        
+        function skip(seconds) { var player = videojs('main-video'); player.currentTime(player.currentTime() + seconds); }
+        
+        function toggleMute() { var player = videojs('main-video'); player.muted(!player.muted()); }
+        
+        async function togglePiP() { 
+            var videoEl = document.getElementById('main-video');
+            try { if (videoEl !== document.pictureInPictureElement) await videoEl.requestPictureInPicture(); else await document.exitPictureInPicture(); } 
+            catch (error) { alert("PiP not supported."); } 
+        }
+
+        function toggleFullscreen() { 
+            if (!document.fullscreenElement) { wrapper.requestFullscreen(); } 
+            else { document.exitFullscreen(); } 
+        }
     </script>
+
 </body>
 </html>
