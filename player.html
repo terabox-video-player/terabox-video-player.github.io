@@ -6,7 +6,10 @@
     <title>Premium Video Player</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-    
+
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -95,7 +98,7 @@
                 <div class="animate-spin rounded-full h-10 w-10 border-4 border-[#5cb874] border-t-transparent"></div>
             </div>
 
-            <video id="main-video" class="w-full h-full object-contain" preload="metadata" playsinline>
+            <video id="main-video" class="video-js w-full h-full object-contain" preload="metadata" playsinline>
                 Your browser does not support video.
             </video>
 
@@ -208,28 +211,14 @@
                     
                     const data = await response.json();
                     
-                    if (data && data.found === true && data.result && data.result.data && data.result.data[0]) {
-                        // सिक्युरिटी एरर काढला आणि डायरेक्ट प्ले सुरू केलं
-                        video.src = data.result.data[0].stream_url; 
-                        video.removeAttribute('crossOrigin'); 
-                        video.preload = "auto";
-                        video.setAttribute('playsinline', ''); 
-                        
-                        let playPromise = video.play();
-                        if (playPromise !== undefined) {
-                            playPromise.then(_ => {
-                                playIcon.classList.add('hidden');
-                                pauseIcon.classList.remove('hidden');
-                            }).catch(error => {
-                                console.log("Auto-play prevented", error);
-                            });
-                        }
-                        
+                                        if (data && data.result && data.result.data[0]) {
+                        const streamUrl = data.result.data[0].stream_url;
+                        var player = videojs('main-video');
+                        player.src({ src: streamUrl, type: 'video/mp4' });
+                        player.play();
                         document.getElementById('video-title').textContent = data.result.file_name;
-                    } 
-                    else if (data && data.url) {
-                        video.src = data.url;
-                        video.preload = "auto"; 
+                    }
+ 
                         video.play();
                         playIcon.classList.add('hidden');
                         pauseIcon.classList.remove('hidden');
