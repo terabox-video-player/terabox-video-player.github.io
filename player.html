@@ -194,24 +194,37 @@
         const pauseAd = document.getElementById('pause-ad');
         const loader = document.getElementById('loading-spinner');
 
-        window.onload = async () => {
+                window.onload = async () => {
             const videoSrc = sessionStorage.getItem('videoSource');
             if (videoSrc) {
                 loader.classList.remove('hidden');
                 try {
-                    const response = await fetch(videoSrc);
+                    const response = await fetch(videoSrc, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'Mozilla/5.0'
+                        }
+                    });
+                    
                     const data = await response.json();
+                    
                     if(data && data.url) {
                         video.src = data.url;
                         video.play();
                         playIcon.classList.add('hidden');
                         pauseIcon.classList.remove('hidden');
                         if(data.title) { document.getElementById('video-title').textContent = data.title; }
+                    } else {
+                        alert("API Error: " + JSON.stringify(data));
                     }
-                } catch (error) { console.error(error); }
+                } catch (error) { 
+                    console.error("Fetch Error:", error); 
+                    alert("Network Error: " + error.message);
+                }
                 finally { loader.classList.add('hidden'); }
             }
         };
+
 
         function goBack() { if (window.history.length > 1) window.history.back(); else alert("This is the main page."); }
         function showNotice(featureName) { alert(featureName + " will be available soon."); }
