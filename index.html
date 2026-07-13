@@ -3,32 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERABOX LINK PLAYER</title>
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light">
+    
+    <title>terabox-video-player.github.io</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; background: #fdfdfd; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        .hero { text-align: center; padding: 40px 20px; }
-        .input-section { background: #064e3b; padding: 25px; border-radius: 20px; width: 90%; max-width: 600px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        input { width: 100%; padding: 15px; border-radius: 10px; border: none; margin-bottom: 15px; box-sizing: border-box; }
-        .play-btn { width: 100%; padding: 18px; background: #fbbf24; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; color: #064e3b; }
+        :root { color-scheme: light; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f7f9fa !important; 
+            color: #1e293b !important; 
+        }
+        .bg-white { background-color: #ffffff !important; }
+        .text-slate-900 { color: #0f172a !important; }
+        .text-slate-800 { color: #1e293b !important; }
+        .text-slate-500 { color: #64748b !important; }
+        
+        /* ॲड प्लेसहोल्डरसाठी स्टाईल */
+        .ad-placeholder {
+            background-image: repeating-linear-gradient(45deg, #f1f5f9 25%, transparent 25%, transparent 75%, #f1f5f9 75%, #f1f5f9), repeating-linear-gradient(45deg, #f1f5f9 25%, #ffffff 25%, #ffffff 75%, #f1f5f9 75%, #f1f5f9);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+        }
     </style>
 </head>
-<body>
-    <div class="hero">
-        <h1>Play TeraBox Links Instantly</h1>
-    </div>
-    <div class="input-section">
-        <p>Paste Your TeraBox Link</p>
-        <input type="text" id="urlInput" placeholder="https://www.terabox.com/...">
-        <button class="play-btn" onclick="goToPlayer()">Play Now</button>
+<body class="pb-10">
+
+    <div class="sticky top-0 z-50 bg-[#f7f9fa] border-b border-slate-100 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)]">
+        
+        <div class="px-4 pt-3 pb-1">
+            <div class="bg-[#e9ecef] rounded-lg py-1.5 px-3 flex justify-between items-center w-full">
+                <div class="w-4 h-4"></div> <div class="flex items-center gap-1.5 text-slate-800">
+                    <svg class="w-3 h-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                    <span class="text-[11.5px] font-extrabold tracking-wide text-slate-700">terabox-video-player.github.io</span>
+                </div>
+                
+                <button onclick="window.location.reload()" class="text-slate-500 hover:text-slate-900 transition p-0.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <header class="px-4 py-2.5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <button class="text-slate-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <div class="flex items-center gap-2">
+                    <div class="relative w-8 h-8 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4L12 12L4 20V4Z" fill="#facc15"/>
+                            <path d="M12 12L20 12L12 20V12Z" fill="#3b82f6"/>
+                            <path d="M4 4L20 12L12 12L4 4Z" fill="#10b981"/>
+                        </svg>
+                    </div>
+                    <div class="leading-none mt-1">
+                        <h1 class="text-[16px] font-extrabold text-slate-900 tracking-wide">TERABOX</h1>
+                        <span class="text-[9px] font-bold text-slate-500 tracking-[0.2em] block uppercase mt-[1px]">Link Player</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="bg-[#1b5e41] text-white px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                    <svg class="w-3.5 h-3.5 text-[#a7d1bd]" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V18H19V19Z"></path></svg>
+                    Premium
+                </button>
+                <div class="w-8 h-8 rounded-full bg-white border-2 border-slate-200 flex items-center justify-center text-slate-700 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+            </div>
+        </header>
     </div>
 
+    <main class="max-w-xl mx-auto px-4 py-4 space-y-4">
+        
+        <div class="w-full h-[60px] rounded-xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70">
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
+            <span class="text-slate-400 text-[8px]">(Top Banner Space)</span>
+        </div>
+        <div class="relative overflow-visible pb-2 pt-1">
+            <div class="relative z-10 w-[65%]">
+                <span class="bg-[#e6f4ed] text-[#1e6f4d] px-2.5 py-1 rounded-full text-[9px] font-bold mb-3 inline-block">Simple. Fast. Secure.</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-2 text-slate-900 leading-[1.15]">Play TeraBox <br>Links <span class="text-[#156341]">Instantly</span></h2>
+                <p class="text-slate-500 text-[11px] font-semibold leading-relaxed mb-4">Paste any TeraBox link and watch your videos online without downloading.</p>
+                
+                <div class="space-y-3 mt-5">
+                    <div class="flex items-start gap-2">
+                        <div class="mt-0.5 bg-white p-1 rounded-full text-[#156341] border border-slate-100 shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
+                        <div><h4 class="text-[12px] font-extrabold text-slate-800">100% Secure</h4><p class="text-[10px] text-slate-500 font-medium">Your data is always safe</p></div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <div class="mt-0.5 bg-white p-1 rounded-full text-[#156341] border border-slate-100 shadow-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg></div>
+                        <div><h4 class="text-[12px] font-extrabold text-slate-800">Super Fast</h4><p class="text-[10px] text-slate-500 font-medium">Ultra fast streaming</p></div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <div class="mt-0.5 bg-white p-1 rounded-full text-slate-700 border border-slate-100 shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg></div>
+                        <div><h4 class="text-[12px] font-extrabold text-slate-800">No Limits</h4><p class="text-[10px] text-slate-500 font-medium">Unlimited videos, anytime</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute right-0 top-2 w-40 h-44 z-0 pointer-events-none">
+                <div class="absolute inset-0 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] [background-size:10px_10px] opacity-40"></div>
+                <svg class="absolute top-0 right-8 w-16 h-16 text-[#eaf4ed]" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 19c2.485 0 4.5-2.015 4.5-4.5 0-2.31-1.745-4.218-4-4.464V10c0-3.314-2.686-6-6-6s-6 2.686-6 6v.036c-2.255.246-4 2.154-4 4.464C2 16.985 4.015 19 6.5 19h11z"/></svg>
+                <svg class="absolute top-4 right-14 w-8 h-8 text-[#5cb97d]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4l-6 6h4v6h4v-6h4l-6-6z"/></svg>
+                <div class="absolute top-12 right-0 w-36 h-[90px] bg-white rounded-xl shadow-[0_10px_20px_-5px_rgba(0,0,0,0.15)] border border-slate-100 transform -rotate-6 z-10 flex flex-col overflow-hidden">
+                    <div class="h-4 bg-slate-50 border-b border-slate-100 flex items-center px-2 gap-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-red-400"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                    </div>
+                    <div class="flex-grow bg-[#f5f8f6] flex items-center justify-center relative">
+                        <div class="w-10 h-10 bg-[#165a3c] rounded-full flex items-center justify-center shadow-lg">
+                            <svg class="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <div class="absolute bottom-1.5 left-2 right-2 h-1 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="w-1/3 h-full bg-[#5cb97d]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-[#144f33] rounded-[1.2rem] p-5 shadow-[0_12px_24px_-6px_rgba(20,79,51,0.4)] relative mt-2">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-white text-[16px] font-extrabold tracking-wide">Paste Your TeraBox Link</h3>
+                    <p class="text-[#a4c9b7] text-[11px] font-medium mt-0.5">Paste the link below and click on Play</p>
+                </div>
+                <div class="w-5 h-5 rounded-full border border-[#44745d] flex items-center justify-center text-[#a4c9b7] text-[11px] font-bold cursor-pointer hover:bg-[#1a5e3f] transition">
+                    ?
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-3.5">
+                <div class="flex bg-white rounded-lg overflow-hidden shadow-inner p-1 h-[3.2rem]">
+                    <div class="pl-3 flex items-center justify-center text-slate-300">
+                        <svg class="w-5 h-5 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    </div>
+                    <input type="text" id="video-url" placeholder="https://www.terabox.com/s/xxxxxxxxx" class="w-full px-2 py-2 outline-none text-slate-600 text-[13px] font-semibold placeholder-slate-300 bg-transparent">
+                    <button onclick="pasteClipboard()" class="px-4 text-[#144f33] font-bold bg-[#f1f5f3] rounded-md flex items-center gap-1.5 text-[12px] hover:bg-[#e2ebe6] transition h-full border-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        Paste
+                    </button>
+                </div>
+                
+                <button onclick="playVideo()" class="w-full bg-[#fdc559] hover:bg-[#f6b73a] text-[#5e410a] font-extrabold text-[16px] py-3.5 rounded-lg shadow-md transition-transform transform hover:scale-[1.01] flex justify-center items-center gap-2 border-none">
+                    <svg class="w-5 h-5 text-[#5e410a] fill-current" viewBox="0 0 24 24"><path d="M8 5V19L19 12L8 5Z"></path></svg> 
+                    Play Now
+                </button>
+            </div>
+            
+            <p class="text-center text-[#86bba4] text-[10px] mt-4 flex items-center justify-center gap-1.5 font-medium">
+                <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                We don't store or upload any files. We just help you stream.
+            </p>
+        </div>
+
+        <section id="player-container" class="hidden w-full z-20 relative mt-2 mb-2">
+            <div class="bg-white p-2 rounded-xl shadow-lg border border-slate-100">
+                <div class="relative w-full overflow-hidden rounded-lg bg-black" style="padding-top: 56.25%;">
+                    <iframe id="video-frame" class="absolute top-0 left-0 w-full h-full border-0" src="" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                </div>
+                <div class="p-2 mt-1 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-xs flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> Streaming
+                    </h3>
+                    <button onclick="closePlayer()" class="text-[10px] bg-red-50 text-red-600 hover:bg-red-100 font-bold px-3 py-1.5 rounded-md transition border-none">Close Player</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="w-full h-[250px] rounded-[1.2rem] border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mt-4 mb-2">
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
+            <span class="text-slate-400 text-[8px]">(Square Ad Space - 300x250)</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center pt-2">
+            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                <div class="text-[#5cb97d] mb-1.5">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                </div>
+                <span class="text-[11px] font-extrabold text-slate-800 block">No Signup</span>
+                <span class="text-[9px] text-slate-400 font-medium block">100% Free</span>
+            </div>
+            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                <div class="text-[#fbb646] mb-1.5">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                <span class="text-[11px] font-extrabold text-slate-800 block">All Devices</span>
+                <span class="text-[9px] text-slate-400 font-medium block">Mobile • PC</span>
+            </div>
+            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                <div class="text-[#4396e9] mb-1.5">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V20M17 4V20M3 8H7M17 8H21M3 12H7M17 12H21M3 16H7M17 16H21M4 4H20C20.5523 4 21 4.44772 21 5V19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19V5C3 4.44772 3.44772 4 4 4Z"></path></svg>
+                </div>
+                <span class="text-[11px] font-extrabold text-slate-800 block">HD Quality</span>
+                <span class="text-[9px] text-slate-400 font-medium block">Best Stream</span>
+            </div>
+            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                <div class="text-[#a570db] mb-1.5">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <span class="text-[11px] font-extrabold text-slate-800 block">Ad-Free</span>
+                <span class="text-[9px] text-slate-400 font-medium block">Premium</span>
+            </div>
+        </div>
+
+        <div class="pt-5 pb-2">
+            <div class="flex items-center justify-center gap-3 mb-5">
+                <svg class="w-5 h-3 text-[#144f33]" viewBox="0 0 24 12" fill="currentColor"><path d="M24 6c-8.837 0-16-7.163-16-7.163S8 6 0 6c8.837 0 16 7.163 16 7.163S16 6 24 6z"/></svg>
+                <h3 class="text-center text-[16px] font-extrabold text-slate-900">Why Choose Us?</h3>
+                <svg class="w-5 h-3 text-[#144f33] transform scale-x-[-1]" viewBox="0 0 24 12" fill="currentColor"><path d="M24 6c-8.837 0-16-7.163-16-7.163S8 6 0 6c8.837 0 16 7.163 16 7.163S16 6 24 6z"/></svg>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3.5">
+                <div class="bg-[#f0f8f4] p-4 rounded-[1.2rem] text-center shadow-sm">
+                    <div class="bg-[#e2f1e9] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-[#469b6a]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-[13px] text-slate-900 mb-1">Blazing Fast</h4>
+                    <p class="text-[10.5px] text-slate-600 font-medium leading-snug">Experience ultra fast streaming without buffering.</p>
+                </div>
+                <div class="bg-[#f2f8fe] p-4 rounded-[1.2rem] text-center shadow-sm">
+                    <div class="bg-[#e0effa] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-[#4396e9]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-[13px] text-[#4396e9] mb-1">Totally Secure</h4>
+                    <p class="text-[10.5px] text-slate-600 font-medium leading-snug">We never save your links or files. Your privacy is our priority.</p>
+                </div>
+                <div class="bg-[#fef9f0] p-4 rounded-[1.2rem] text-center shadow-sm">
+                    <div class="bg-[#faecd7] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-[#e39c4d]">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-[13px] text-slate-900 mb-1">Cloud Powered</h4>
+                    <p class="text-[10.5px] text-slate-600 font-medium leading-snug">Powerful servers ensure smooth playback anytime, anywhere.</p>
+                </div>
+                <div class="bg-[#faf5ff] p-4 rounded-[1.2rem] text-center shadow-sm">
+                    <div class="bg-[#efe2fb] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-[#a570db]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-[13px] text-slate-900 mb-1">Always Updated</h4>
+                    <p class="text-[10.5px] text-slate-600 font-medium leading-snug">We continuously update our systems for the best experience.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-3 mt-4 mb-4">
+            <div class="text-[#5cb97d] flex-shrink-0">
+                <svg class="w-9 h-9" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h2v12H4V6zm4 0h12a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2zm2 2v8h8V8h-8zm2 2h4v4h-4v-4z"></path></svg>
+            </div>
+            <div class="flex-grow pl-1">
+                <h4 class="font-extrabold text-[14px] text-slate-900">Supported Content</h4>
+                <p class="text-[10.5px] text-slate-600 font-medium mt-0.5 leading-snug">We support all public TeraBox links including movies, series, shows, tutorials and more.</p>
+            </div>
+            
+            <div class="flex flex-col items-center flex-shrink-0 pl-1 relative">
+                <svg class="absolute -left-1 top-1 w-3 h-10 text-[#a3ccb4]" viewBox="0 0 24 80" fill="currentColor"><path d="M22.5 12c-5 0-10 8-15 15 5 2 12-2 15-15zm-2 20c-5 0-10 8-15 15 5 2 12-2 15-15zm-2 20c-5 0-10 8-15 15 5 2 12-2 15-15z"/></svg>
+                <svg class="absolute -right-1 top-1 w-3 h-10 text-[#a3ccb4] transform scale-x-[-1]" viewBox="0 0 24 80" fill="currentColor"><path d="M22.5 12c-5 0-10 8-15 15 5 2 12-2 15-15zm-2 20c-5 0-10 8-15 15 5 2 12-2 15-15zm-2 20c-5 0-10 8-15 15 5 2 12-2 15-15z"/></svg>
+                <span class="font-extrabold text-slate-800 text-[13px] z-10 pt-1">100%</span>
+                <span class="text-[9px] font-bold text-slate-600 z-10 block">Working</span>
+            </div>
+        </div>
+
+        <div class="w-full h-[60px] rounded-xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mb-4">
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
+            <span class="text-slate-400 text-[8px]">(Bottom Banner Space)</span>
+        </div>
+        </main>
+
     <script>
-        function goToPlayer() {
-            let url = document.getElementById('urlInput').value;
-            if(url) {
-                // युझरला प्लेअर पेजवर पाठवण्यासाठी
-                window.location.href = "player.html?url=" + encodeURIComponent(url);
+        async function pasteClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('video-url').value = text;
+            } catch (err) {
+                alert('पेस्ट करण्यासाठी ब्राउझरला परवानगी द्या किंवा स्वतः लिंक टाईप करा.');
             }
+        }
+
+        function playVideo() {
+            const inputUrl = document.getElementById('video-url').value.trim();
+            const playerContainer = document.getElementById('player-container');
+            const iframe = document.getElementById('video-frame');
+
+            if (inputUrl === "") {
+                alert("कृपया अगोदर Terabox ची लिंक पेस्ट करा.");
+                return;
+            }
+
+            // तुमची Developer API लिंक इथे जोडली आहे
+            let embedUrl = "https://api.freebyorbit.workers.dev/api/v1/data?url=" + encodeURIComponent(inputUrl);
+
+            iframe.src = embedUrl;
+            playerContainer.classList.remove('hidden');
+            
+            setTimeout(() => {
+                playerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        function closePlayer() {
+            const playerContainer = document.getElementById('player-container');
+            const iframe = document.getElementById('video-frame');
+            playerContainer.classList.add('hidden');
+            iframe.src = ""; 
         }
     </script>
 </body>
