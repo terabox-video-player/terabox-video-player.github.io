@@ -287,26 +287,22 @@
             }
         }
 
-        function playVideo() {
-            const inputUrl = document.getElementById('video-url').value.trim();
-            const playerContainer = document.getElementById('player-container');
-            const iframe = document.getElementById('video-frame');
-
-            if (inputUrl === "") {
-                alert("कृपया अगोदर Terabox ची लिंक पेस्ट करा.");
-                return;
-            }
-
-            // तुमची Developer API लिंक इथे जोडली आहे
-            let embedUrl = "https://api.freebyorbit.workers.dev/api/v1/data?url=" + encodeURIComponent(inputUrl);
-
-            iframe.src = embedUrl;
-            playerContainer.classList.remove('hidden');
-            
-            setTimeout(() => {
-                playerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+            function playVideo() {
+        const inputUrl = document.getElementById('video-url').value.trim();
+        
+        if (inputUrl === "") {
+            alert("कृपया Terabox लिंक पेस्ट करा.");
+            return;
         }
+
+        // लिंक API ला पाठवून ती स्टोअर केली
+        const apiUrl = "https://api.freebyorbit.workers.dev/api/v1/data?url=" + encodeURIComponent(inputUrl);
+        sessionStorage.setItem('videoSource', apiUrl);
+        
+        // आता थेट प्लेयर पेजवर जा
+        window.location.href = "player.html";
+    }
+
 
         function closePlayer() {
             const playerContainer = document.getElementById('player-container');
