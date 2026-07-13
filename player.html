@@ -217,22 +217,7 @@
                         player.src({ src: streamUrl, type: 'video/mp4' });
                         player.play();
                         document.getElementById('video-title').textContent = data.result.file_name;
-                    }
- 
-                        video.play();
-                        playIcon.classList.add('hidden');
-                        pauseIcon.classList.remove('hidden');
-                        if(data.title) { document.getElementById('video-title').textContent = data.title; }
-                    } else {
-                        alert("API Error: " + JSON.stringify(data));
-                    }
-                } catch (error) { 
-                    console.error("Fetch Error:", error); 
-                    alert("Network Error: " + error.message);
-                }
-                finally { loader.classList.add('hidden'); }
-            }
-        };
+                                        }                
 
 
 
