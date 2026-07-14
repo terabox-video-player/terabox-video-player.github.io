@@ -231,6 +231,13 @@ player.src({
 player.ready(function () {
     player.play().catch(() => {});
 });
+                        player.on('error', function() {
+    var err = player.error();
+    var errMsg = err ? err.message : "अज्ञात एरर";
+    var errCode = err ? err.code : "N/A";
+    alert("एरर आला: " + errMsg + " (Code: " + errCode + ")");
+});
+
 document.getElementById('video-title').textContent = data.result.file_name;
                     } else {
                         alert("API Error: " + JSON.stringify(data));
