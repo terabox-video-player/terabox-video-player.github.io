@@ -210,10 +210,28 @@
                     
                     if (data && data.result && data.result.data[0]) {
                         const streamUrl = data.result.data[0].stream_url;
-                        player = videojs('main-video', { html5: { hls: { overrideNative: true } } });
-                        player.src({ src: streamUrl, type: 'application/x-mpegURL' });
-                        player.play();
-                        document.getElementById('video-title').textContent = data.result.file_name;
+
+player = videojs('main-video', {
+    html5: {
+        hls: {
+            overrideNative: true
+        }
+    }
+});
+
+const videoType = streamUrl.includes(".m3u8")
+    ? "application/x-mpegURL"
+    : "video/mp4";
+
+player.src({
+    src: streamUrl,
+    type: videoType
+});
+
+player.ready(function () {
+    player.play().catch(() => {});
+});
+document.getElementById('video-title').textContent = data.result.file_name;
                     } else {
                         alert("API Error: " + JSON.stringify(data));
                     }
