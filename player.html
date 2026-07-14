@@ -10,6 +10,8 @@
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.15.0/videojs-contrib-hls.min.js"></script>
+
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -208,8 +210,8 @@
                     
                     if (data && data.result && data.result.data[0]) {
                         const streamUrl = data.result.data[0].stream_url;
-                        player = videojs('main-video');
-                        player.src({ src: streamUrl, type: 'video/mp4' });
+                        player = videojs('main-video', { html5: { hls: { overrideNative: true } } });
+                        player.src({ src: streamUrl, type: 'application/x-mpegURL' });
                         player.play();
                         document.getElementById('video-title').textContent = data.result.file_name;
                     } else {
