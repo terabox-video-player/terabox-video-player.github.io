@@ -220,22 +220,24 @@
                     let videoTitle = "Playing Video...";
 
                     // API कडून आलेला रिझल्ट वाचण्याची सोपी पद्धत
-                    try {
+                                        try {
                         data = JSON.parse(textData);
-                        streamUrl = data.url || data.fast_url || data.stream_url || data.link || data.download_url || 
-                                   (data.data && (data.data.url || data.data.fast_url || data.data.stream_url || data.data.link)) ||
-                                   (data.result && (data.result.url || data.result.stream_url));
-                        videoTitle = data.title || data.file_name || data.name || (data.data && (data.data.title || data.data.file_name)) || videoTitle;
+                        
+                        // पोस्टरची नाही, तर थेट व्हिडिओची लिंक घेण्याची पद्धत
+                        if (data.result && data.result.data && data.result.data.length > 0) {
+                            streamUrl = data.result.data[0].stream_url;
+                            videoTitle = data.result.file_name || "Playing Video...";
+                        } else {
+                            // बॅकअप पद्धत
+                            streamUrl = data.url || data.fast_url || data.stream_url || data.link || (data.result && data.result.url);
+                            videoTitle = data.title || data.file_name || "Playing Video...";
+                        }
                     } catch(e) {
                         if(textData.trim().startsWith("http")) {
                             streamUrl = textData.trim();
                         }
                     }
 
-                    if (!streamUrl) {
-                        const match = textData.match(/"(https?:\/\/[^"]+)"/);
-                        if (match) streamUrl = match[1];
-                    }
 
                     if (streamUrl) {
                         document.getElementById('video-title').textContent = videoTitle;
