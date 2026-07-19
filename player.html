@@ -211,7 +211,7 @@
                 try {
                     // हा आहे आपला नवीन Play Orbit चा API
                     const apiUrl = "https://api.freebyorbit.workers.dev/api/v1/data?url=" + encodeURIComponent(videoSrc);
-                    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(apiUrl);
+                    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(apiUrl);
                     const response = await fetch(proxyUrl);
                     const textData = await response.text();
                     
