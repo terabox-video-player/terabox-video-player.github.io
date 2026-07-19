@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Premium Video Player</title>
-    
+
     <!-- ही ओळख लपवणारी (Referrer लपवणारी) ब्रह्मास्त्र लाईन -->
     <meta name="referrer" content="no-referrer">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.15.0/videojs-contrib-hls.min.js"></script>
 
@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="hidden md:flex flex-col items-center gap-2" onclick="event.stopPropagation()">
-                        <button onclick="toggleFullscreen()" class="p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-sm transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></button>
+                        <button onclick="toggleFullscreen()" class="p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-sm transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l5-5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></button>
                     </div>
                 </div>
 
@@ -189,8 +189,8 @@
         <span class="text-slate-400 text-[8px] md:text-[10px]">(Bottom Banner Space)</span>
     </div>
 
-        <script>
-                var player; 
+    <script>
+        var player; 
 
         const playIcon = document.getElementById('play-icon');
         const pauseIcon = document.getElementById('pause-icon');
@@ -209,43 +209,65 @@
             if (videoSrc) {
                 loader.classList.remove('hidden');
                 try {
-                    const response = await fetch(videoSrc, { headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' } });
-                    const data = await response.json();
+                    // हा आहे आपला नवीन Play Orbit चा API
+                    const apiUrl = "https://api.freebyorbit.workers.dev/api/v1/data?url=" + encodeURIComponent(videoSrc);
+                    
+                    const response = await fetch(apiUrl);
+                    const textData = await response.text();
+                    
+                    let data;
+                    let streamUrl = "";
+                    let videoTitle = "Playing Video...";
 
-                    if (data && data.result && data.result.data[0]) {
-                        // मूळ डायरेक्ट टेराबॉक्स लिंक (प्रॉक्सी शिवाय)
-                        const streamUrl = data.result.data[0].stream_url;
+                    // API कडून आलेला रिझल्ट वाचण्याची सोपी पद्धत
+                    try {
+                        data = JSON.parse(textData);
+                        streamUrl = data.url || data.fast_url || data.stream_url || data.link || data.download_url || 
+                                   (data.data && (data.data.url || data.data.fast_url || data.data.stream_url || data.data.link)) ||
+                                   (data.result && (data.result.url || data.result.stream_url));
+                        videoTitle = data.title || data.file_name || data.name || (data.data && (data.data.title || data.data.file_name)) || videoTitle;
+                    } catch(e) {
+                        if(textData.trim().startsWith("http")) {
+                            streamUrl = textData.trim();
+                        }
+                    }
 
-player = videojs('main-video', {
-    html5: {
-        hls: {
-            overrideNative: true
-        }
-    }
-});
+                    if (!streamUrl) {
+                        const match = textData.match(/"(https?:\/\/[^"]+)"/);
+                        if (match) streamUrl = match[1];
+                    }
 
-const videoType = streamUrl.includes(".m3u8")
-    ? "application/x-mpegURL"
-    : "video/mp4";
+                    if (streamUrl) {
+                        document.getElementById('video-title').textContent = videoTitle;
 
-player.src({
-    src: streamUrl,
-    type: videoType
-});
+                        player = videojs('main-video', {
+                            html5: {
+                                hls: {
+                                    overrideNative: true
+                                }
+                            }
+                        });
 
-player.ready(function () {
-    player.play().catch(() => {});
-});
+                        const videoType = streamUrl.includes(".m3u8") ? "application/x-mpegURL" : "video/mp4";
+
+                        player.src({
+                            src: streamUrl,
+                            type: videoType
+                        });
+
+                        player.ready(function () {
+                            player.play().catch(() => {});
+                        });
+
                         player.on('error', function() {
-    var err = player.error();
-    var errMsg = err ? err.message : "अज्ञात एरर";
-    var errCode = err ? err.code : "N/A";
-    alert("एरर आला: " + errMsg + " (Code: " + errCode + ")");
-});
+                            var err = player.error();
+                            var errMsg = err ? err.message : "अज्ञात एरर";
+                            var errCode = err ? err.code : "N/A";
+                            alert("एरर आला: " + errMsg + " (Code: " + errCode + ")");
+                        });
 
-document.getElementById('video-title').textContent = data.result.file_name;
                     } else {
-                        alert("API Error: " + JSON.stringify(data));
+                        alert("API Error: लिंक सापडली नाही. (Response: " + textData.substring(0, 50) + ")");
                     }
                 } catch (error) { 
                     console.error("Fetch Error:", error); 
@@ -257,8 +279,7 @@ document.getElementById('video-title').textContent = data.result.file_name;
         function goBack() { if (window.history.length > 1) window.history.back(); else alert("This is the main page."); }
         function showNotice(featureName) { alert(featureName + " will be available soon."); }
 
-                function togglePlay() { 
-            // पुन्हा videojs लोड करण्याची गरज नाही, थेट ग्लोबल player वापर
+        function togglePlay() { 
             if (player.paused()) { 
                 player.play(); 
                 playIcon.classList.add('hidden'); 
@@ -272,7 +293,6 @@ document.getElementById('video-title').textContent = data.result.file_name;
             } 
         }
 
-        // इथूनही var player = ... काढून टाकले आहे
         function skip(seconds) { player.currentTime(player.currentTime() + seconds); }
 
         function toggleMute() { player.muted(!player.muted()); }
