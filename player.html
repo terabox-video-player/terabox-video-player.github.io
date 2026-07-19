@@ -211,8 +211,8 @@
                 try {
                     // हा आहे आपला नवीन Play Orbit चा API
                     const apiUrl = "https://api.freebyorbit.workers.dev/api/v1/data?url=" + encodeURIComponent(videoSrc);
-                    
-                    const response = await fetch(apiUrl);
+                    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(apiUrl);
+                    const response = await fetch(proxyUrl);
                     const textData = await response.text();
                     
                     let data;
@@ -272,7 +272,7 @@
                 } catch (error) { 
                     console.error("Fetch Error:", error); 
                     alert("Network Error: " + error.message);
-                } finally { loader.classList.add('hidden'); }
+                } finally { loader.classList.add8('hidden'); }
             }
         };
 
