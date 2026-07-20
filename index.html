@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-1.5">
-                <!-- Single Line Compact Live Counter -->
+                <!-- Live Counter -->
                 <div class="flex items-center space-x-1 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full text-[10px] font-extrabold border border-emerald-200 whitespace-nowrap">
                     <i class="fa-solid fa-eye text-emerald-500 text-[10px]"></i>
                     <span class="flex items-center gap-1"><span id="liveCount">1,718</span> <span>Live</span></span>
@@ -77,7 +77,13 @@
 
         <div class="relative overflow-visible pb-2 pt-1">
             <div>
-                <span class="bg-[#e6f4ed] text-[#1e6f4d] px-2.5 py-1 rounded-full text-[9px] font-bold mb-3 inline-block">Simple. Fast. Secure.</span>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="bg-[#e6f4ed] text-[#1e6f4d] px-2.5 py-1 rounded-full text-[9px] font-bold inline-block">Simple. Fast. Secure.</span>
+                    <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-[9.5px] font-bold border border-emerald-200">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span>Server Status: Online</span>
+                    </div>
+                </div>
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-2 text-slate-900 leading-[1.15]">Stream TeraBox <br>Links <span class="text-[#156341]">Instantly</span></h2>
                 <p class="text-slate-500 text-[11px] font-semibold leading-relaxed mb-4">Paste any TeraBox link and watch your videos online without downloading.</p>
             </div>
@@ -177,7 +183,7 @@
         </div>
     </main>
 
-    <!-- Floating Telegram Button with Custom Link -->
+    <!-- Floating Telegram Button -->
     <a href="https://mtchannels.github.io" target="_blank" class="fixed bottom-5 right-5 bg-[#0088cc] hover:bg-[#0077b5] text-white w-11 h-11 rounded-full shadow-lg flex items-center justify-center transition transform hover:scale-105 z-50">
         <i class="fa-brands fa-telegram text-xl"></i>
     </a>
@@ -201,9 +207,22 @@
                 return;
             }
 
-            btnText.innerHTML = "Processing Request...";
+            // Enhanced Loading Animation Steps
+            btnText.innerHTML = "Connecting to TeraBox...";
             loader.style.display = "block";
             resultDiv.innerHTML = "";
+
+            setTimeout(() => {
+                if(btnText.innerHTML.includes("Connecting")) {
+                    btnText.innerHTML = "Bypassing Security...";
+                }
+            }, 800);
+
+            setTimeout(() => {
+                if(btnText.innerHTML.includes("Security")) {
+                    btnText.innerHTML = "Optimizing HD Stream...";
+                }
+            }, 1600);
 
             try {
                 let response = await fetch(`https://api.freebyorbit.workers.dev/api/v1/data?url=${encodeURIComponent(url)}`);
