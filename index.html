@@ -8,6 +8,7 @@
     <title>Terabox Video Player</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { color-scheme: light; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f7f9fa !important; color: #1e293b !important; }
@@ -55,7 +56,12 @@
                     </div>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
+                <!-- Single Line Compact Live Counter -->
+                <div class="flex items-center space-x-1 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full text-[10px] font-extrabold border border-emerald-200 whitespace-nowrap">
+                    <i class="fa-solid fa-eye text-emerald-500 text-[10px]"></i>
+                    <span class="flex items-center gap-1"><span id="liveCount">1,718</span> <span>Live</span></span>
+                </div>
                 <button class="bg-[#1b5e41] text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm border-none">Secure</button>
             </div>
         </header>
@@ -171,6 +177,11 @@
         </div>
     </main>
 
+    <!-- Floating Telegram Button with Custom Link -->
+    <a href="https://mtchannels.github.io" target="_blank" class="fixed bottom-5 right-5 bg-[#0088cc] hover:bg-[#0077b5] text-white w-11 h-11 rounded-full shadow-lg flex items-center justify-center transition transform hover:scale-105 z-50">
+        <i class="fa-brands fa-telegram text-xl"></i>
+    </a>
+
     <script>
         async function pasteClipboard() {
             try {
@@ -184,7 +195,7 @@
             let resultDiv = document.getElementById('result');
             let btnText = document.getElementById('btn-text');
             let loader = document.getElementById('btn-loader');
-            
+
             if(!url) {
                 alert('कृपया आधी Terabox ची लिंक टाका!');
                 return;
@@ -197,7 +208,7 @@
             try {
                 let response = await fetch(`https://api.freebyorbit.workers.dev/api/v1/data?url=${encodeURIComponent(url)}`);
                 let data = await response.json();
-                
+
                 if(data && data.found && data.result && data.result.data && data.result.data.length > 0) {
                     let fileName = data.result.file_name || "TeraBox Video File";
                     let streamUrl = data.result.data[0].stream_url;
@@ -226,6 +237,15 @@
             btnText.innerHTML = "Play / Download Now";
             loader.style.display = "none";
         }
+
+        // Live Users Count Randomizer Script
+        setInterval(() => {
+            const countElem = document.getElementById('liveCount');
+            if (countElem) {
+                let randomNum = Math.floor(Math.random() * (1800 - 1300 + 1)) + 1300;
+                countElem.innerText = randomNum.toLocaleString();
+            }
+        }, 4000);
     </script>
 </body>
 </html>
