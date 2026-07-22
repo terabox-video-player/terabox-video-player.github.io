@@ -7,26 +7,90 @@
     <meta name="supported-color-schemes" content="light">
     <title>Terabox Video Player</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { color-scheme: light; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f7f9fa !important; color: #1e293b !important; }
-        .bg-white { background-color: #ffffff !important; }
-        .text-slate-900 { color: #0f172a !important; }
-        .text-slate-800 { color: #1e293b !important; }
-        .text-slate-500 { color: #64748b !important; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #fcfdff !important; 
+            color: #1e293b !important;
+            background-image: 
+                radial-gradient(circle at 0% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%), 
+                radial-gradient(circle at 100% 50%, rgba(236, 72, 153, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, #f1f5f9 2px, transparent 2px),
+                radial-gradient(circle at 10% 80%, #f1f5f9 2px, transparent 2px);
+            background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+        }
+        
+        .text-gradient-title {
+            background: linear-gradient(to right, #ff4b72, #7a5af8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-card {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+            box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.4);
+        }
+
+        .watch-btn {
+            background: linear-gradient(to right, #ff9a44 0%, #ff3a7c 100%);
+            box-shadow: 0 12px 25px -8px rgba(255, 58, 124, 0.5);
+        }
+        .watch-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+        /* Ad Placeholder Pattern */
         .ad-placeholder {
             background-image: repeating-linear-gradient(45deg, #f1f5f9 25%, transparent 25%, transparent 75%, #f1f5f9 75%, #f1f5f9), repeating-linear-gradient(45deg, #f1f5f9 25%, #ffffff 25%, #ffffff 75%, #f1f5f9 75%, #f1f5f9);
             background-position: 0 0, 10px 10px; background-size: 20px 20px;
         }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #5e410a; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: none; }
+
+        /* Sidebar Drawer Styling */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%);
+        }
+        #sidebar.open {
+            transform: translateX(0);
+        }
+
+        .loader { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="pb-10">
+<body class="pb-10 relative z-0">
 
-    <div class="sticky top-0 z-50 bg-[#f7f9fa] border-b border-slate-100 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)]">
+    <!-- Sidebar Overlay -->
+    <div id="overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Sliding Sidebar Menu (Left) -->
+    <div id="sidebar" class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 p-5 flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center pb-5 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#6366f1] via-[#a855f7] to-[#ec4899] flex items-center justify-center text-white text-sm shadow-md">
+                        <i class="fa-solid fa-tv"></i>
+                    </div>
+                    <span class="font-extrabold text-slate-900 text-sm">Menu</span>
+                </div>
+                <button onclick="toggleMenu()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="py-4 space-y-2">
+                <a href="https://mtchannels.github.io" target="_blank" class="flex items-center gap-3.5 px-4 py-3 rounded-xl bg-[#e6f2ff] text-[#0088cc] font-bold text-[14px] transition hover:bg-[#d0e8ff]">
+                    <i class="fa-brands fa-telegram text-xl"></i> Join Us on Telegram
+                </a>
+            </div>
+        </div>
+        <div class="text-center text-[11px] text-slate-400 pb-2">
+            terabox-video-player.github.io © 2026
+        </div>
+    </div>
+
+    <!-- Top Browser Bar Simulation -->
+    <div class="sticky top-0 z-40 bg-[#fcfdff]/90 backdrop-blur-md border-b border-slate-100 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.03)]">
         <div class="px-4 pt-3 pb-1">
             <div class="bg-[#e9ecef] rounded-lg py-1.5 px-3 flex justify-between items-center w-full max-w-xl mx-auto">
                 <div class="w-4 h-4"></div> 
@@ -40,155 +104,414 @@
             </div>
         </div>
 
-        <header class="px-4 py-2.5 flex justify-between items-center max-w-xl mx-auto">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2">
-                    <div class="relative w-8 h-8 flex items-center justify-center">
-                        <svg viewBox="0 0 24 24" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 4L12 12L4 20V4Z" fill="#facc15"/>
-                            <path d="M12 12L20 12L12 20V12Z" fill="#3b82f6"/>
-                            <path d="M4 4L20 12L12 12L4 4Z" fill="#10b981"/>
-                        </svg>
-                    </div>
-                    <div class="leading-none mt-1">
-                        <h1 class="text-[15px] font-extrabold text-slate-900 tracking-wide">TERABOX VIDEO PLAYER</h1>
-                        <span class="text-[9px] font-bold text-slate-500 tracking-[0.2em] block uppercase mt-[1px]">Link Player</span>
-                    </div>
+        <!-- Header Branding & Live Count -->
+        <header class="px-3.5 py-2.5 flex justify-between items-center max-w-xl mx-auto">
+            <div class="flex items-center gap-2.5 overflow-hidden">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#6366f1] via-[#a855f7] to-[#ec4899] flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-500/30">
+                    <i class="fa-solid fa-tv text-white text-[13px]"></i>
+                </div>
+                <div class="leading-tight truncate">
+                    <h1 class="text-[11px] font-extrabold text-slate-900 tracking-tight truncate">TERABOX VIDEO PLAYER</h1>
+                    <span class="text-[8.5px] font-bold text-slate-400 tracking-wider block uppercase">Link Player</span>
                 </div>
             </div>
-            <div class="flex items-center gap-1.5">
-                <!-- Live Counter -->
-                <div class="flex items-center space-x-1 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full text-[10px] font-extrabold border border-emerald-200 whitespace-nowrap">
-                    <i class="fa-solid fa-eye text-emerald-500 text-[10px]"></i>
-                    <span class="flex items-center gap-1"><span id="liveCount">1,718</span> <span>Live</span></span>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+                <div class="flex items-center gap-1.5 bg-gradient-to-r from-purple-50 to-pink-50 text-[#7c3aed] px-2.5 py-1 rounded-xl border border-purple-200/60 shadow-xs">
+                    <div class="w-2 h-2 bg-[#ec4899] rounded-full animate-pulse flex-shrink-0"></div>
+                    <div class="flex flex-col items-center leading-tight">
+                        <span class="text-[9.5px] font-extrabold text-slate-800 whitespace-nowrap"><span id="liveCount">260</span> Streaming</span>
+                        <span class="text-[7px] font-black text-rose-500 uppercase tracking-widest text-center w-full">Live</span>
+                    </div>
                 </div>
-                <button class="bg-[#1b5e41] text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm border-none">Secure</button>
+                <!-- Menu Button -->
+                <button onclick="toggleMenu()" class="w-9 h-9 rounded-xl bg-[#6a5ced] hover:bg-[#5a4ddb] text-white flex items-center justify-center shadow-md transition cursor-pointer">
+                    <i class="fa-solid fa-bars text-[14px]"></i>
+                </button>
             </div>
         </header>
     </div>
 
-    <main class="max-w-xl mx-auto px-4 py-4 space-y-4">
+    <main class="max-w-xl mx-auto px-4 space-y-7 pt-4 relative z-10">
+
+        <!-- Hero Title -->
+        <div class="text-center space-y-4 pt-2">
+            <h2 class="text-[34px] md:text-[40px] font-extrabold text-[#1e293b] tracking-tight leading-[1.1]">
+                Stream TeraBox <br>
+                <span class="text-gradient-title">Links Instantly</span>
+            </h2>
+            
+            <!-- Underline Dash -->
+            <div class="flex justify-center items-center gap-1.5 pt-1">
+                <div class="w-9 h-1 rounded-full bg-[#6a5ced]"></div>
+                <div class="w-1.5 h-1 rounded-full bg-[#6a5ced]"></div>
+            </div>
+
+            <!-- Highlighted Subtitle -->
+            <p class="text-[#64748b] text-[13px] font-medium max-w-[300px] mx-auto leading-relaxed mt-3">
+                Paste your TeraBox link below and watch videos online instantly <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ff4b72] to-[#7a5af8]">Without Any Ads</span>.
+            </p>
+
+            <!-- 3 Top Pills -->
+            <div class="flex justify-center items-center gap-2.5 pt-2 flex-wrap">
+                <span class="bg-[#e6fcf2] text-[#059669] px-3.5 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 shadow-sm border border-[#d1fae5]">
+                    <i class="fa-solid fa-bolt text-[#10b981]"></i> Ultra Fast
+                </span>
+                <span class="bg-[#eff6ff] text-[#2563eb] px-3.5 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 shadow-sm border border-[#dbeafe]">
+                    <i class="fa-solid fa-lock text-[#3b82f6]"></i> 100% Secure
+                </span>
+                <span class="bg-[#f5f3ff] text-[#7c3aed] px-3.5 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 shadow-sm border border-[#ede9fe]">
+                    <i class="fa-solid fa-infinity text-[#8b5cf6]"></i> Unlimited
+                </span>
+            </div>
+        </div>
 
         <!-- 1. TOP ADVERTISEMENT SPACE -->
-        <div class="w-full h-[60px] rounded-xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70">
+        <div class="w-full h-[60px] rounded-2xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70">
             <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
             <span class="text-slate-400 text-[8px]">(Top Banner Space)</span>
         </div>
 
-        <div class="relative overflow-visible pb-2 pt-1">
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <span class="bg-[#e6f4ed] text-[#1e6f4d] px-2.5 py-1 rounded-full text-[9px] font-bold inline-block">Simple. Fast. Secure.</span>
-                    <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full text-[9.5px] font-bold border border-emerald-200">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        <span>Server Status: Online</span>
-                    </div>
+        <!-- Main Input Card -->
+        <div class="main-card rounded-[1.8rem] p-6 text-white">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 backdrop-blur-sm shadow-inner">
+                    <i class="fa-solid fa-link text-white text-[16px]"></i>
                 </div>
-                <h2 class="text-3xl md:text-4xl font-extrabold mb-2 text-slate-900 leading-[1.15]">Stream TeraBox <br>Links <span class="text-[#156341]">Instantly</span></h2>
-                <p class="text-slate-500 text-[11px] font-semibold leading-relaxed mb-4">Paste any TeraBox link and watch your videos online without downloading.</p>
-            </div>
-        </div>
-
-        <!-- Input Box -->
-        <div class="bg-[#144f33] rounded-[1.2rem] p-5 shadow-[0_12px_24px_-6px_rgba(20,79,51,0.4)] relative mt-2">
-            <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h3 class="text-white text-[16px] font-extrabold tracking-wide">Paste Your TeraBox Link</h3>
-                    <p class="text-[#a4c9b7] text-[11px] font-medium mt-0.5">Paste the link below and click on Play</p>
+                    <h3 class="text-white text-[16px] font-bold tracking-wide">Paste Your TeraBox Link</h3>
+                    <p class="text-[#e2e8f0] text-[12px] font-medium mt-0.5">We support all TeraBox video links</p>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-3.5">
-                <div class="flex bg-white rounded-lg overflow-hidden shadow-inner p-1 h-[3.2rem]">
-                    <input type="text" id="teraboxUrl" placeholder="https://www.terabox.com/s/xxxxxxxxx" class="w-full px-3 py-2 outline-none text-slate-600 text-[13px] font-semibold placeholder-slate-300 bg-transparent">
-                    <button onclick="pasteClipboard()" class="px-4 text-[#144f33] font-bold bg-[#f1f5f3] rounded-md flex items-center gap-1.5 text-[12px] h-full border-none cursor-pointer">Paste</button>
+            <div class="space-y-4">
+                <div class="relative flex items-center bg-white rounded-full shadow-inner border-[3px] border-white/20">
+                    <div class="absolute left-4 text-slate-400">
+                        <i class="fa-solid fa-link text-[14px]"></i>
+                    </div>
+                    <input type="text" id="teraboxUrl" placeholder="https://terabox.com/s/xxxxxxxxx" class="w-full pl-11 pr-20 py-3.5 outline-none text-slate-700 text-[14px] font-semibold placeholder-slate-400 bg-transparent rounded-full">
+                    <button onclick="pasteClipboard()" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 text-[#6a5ced] font-bold text-[14px] bg-transparent hover:bg-slate-50 rounded-full transition cursor-pointer">Paste</button>
                 </div>
 
-                <button id="fetch-btn" onclick="fetchData()" class="w-full bg-[#fdc559] hover:bg-[#f6b73a] text-[#5e410a] font-extrabold text-[16px] py-3.5 rounded-lg shadow-md transition flex justify-center items-center gap-2 border-none cursor-pointer">
+                <button id="fetch-btn" onclick="fetchData()" class="w-full watch-btn text-white font-extrabold text-[16px] py-4 rounded-xl transition flex justify-center items-center gap-2 cursor-pointer border-none mt-2">
                     <div id="btn-loader" class="loader"></div>
-                    <span id="btn-text" class="flex justify-center items-center gap-2">Play / Download Now</span>
+                    <span id="btn-text" class="flex items-center gap-2.5"><i class="fa-solid fa-play text-sm"></i> Watch Now</span>
                 </button>
             </div>
+
+            <div class="text-center pt-5 pb-1">
+                <span class="text-[12px] font-medium text-white/90">
+                    <i class="fa-solid fa-shield-halved mr-1.5 text-white/80"></i> Safe • Secure • Buffer-free Streaming
+                </span>
+            </div>
         </div>
 
-        <!-- Result Section -->
         <div id="result" class="space-y-4"></div>
 
         <!-- 2. SQUARE ADVERTISEMENT SPACE -->
-        <div class="w-full h-[250px] rounded-[1.2rem] border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mt-4 mb-2">
+        <div class="w-full h-[250px] rounded-[1.2rem] border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70">
             <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
             <span class="text-slate-400 text-[8px]">(Square Ad Space - 300x250)</span>
         </div>
 
-        <!-- Features Grid -->
-        <div class="grid grid-cols-4 gap-2 text-center pt-2">
-            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-                <div class="text-[#5cb97d] mb-1.5"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg></div>
-                <span class="text-[11px] font-extrabold text-slate-800 block">No Signup</span>
-                <span class="text-[9px] text-slate-400 font-medium block">100% Free</span>
+        <!-- 4 Feature Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div class="bg-white py-6 px-3 rounded-[1.2rem] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.06)] text-center flex flex-col items-center border border-slate-100/60">
+                <div class="w-12 h-12 rounded-full bg-[#10b981] text-white flex items-center justify-center mb-3 shadow-md shadow-emerald-500/30">
+                    <i class="fa-solid fa-rocket text-xl"></i>
+                </div>
+                <h4 class="font-extrabold text-[13.5px] text-[#1e293b] mb-1">Blazing Fast</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-snug">Lightning speed<br>streaming</p>
             </div>
-            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-                <div class="text-[#fbb646] mb-1.5"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
-                <span class="text-[11px] font-extrabold text-slate-800 block">All Devices</span>
-                <span class="text-[9px] text-slate-400 font-medium block">Mobile • PC</span>
+            <div class="bg-white py-6 px-3 rounded-[1.2rem] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.06)] text-center flex flex-col items-center border border-slate-100/60">
+                <div class="w-12 h-12 rounded-full bg-[#3b82f6] text-white flex items-center justify-center mb-3 shadow-md shadow-blue-500/30">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <h4 class="font-extrabold text-[13.5px] text-[#1e293b] mb-1">100% Secure</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-snug">Your privacy<br>is our priority</p>
             </div>
-            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-                <div class="text-[#4396e9] mb-1.5"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V20M17 4V20M3 8H7M17 8H21M3 12H7M17 12H21M3 16H7M17 16H21M4 4H20C20.5523 4 21 4.44772 21 5V19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19V5C3 4.44772 3.44772 4 4 4Z"></path></svg></div>
-                <span class="text-[11px] font-extrabold text-slate-800 block">HD Quality</span>
-                <span class="text-[9px] text-slate-400 font-medium block">Best Stream</span>
+            <div class="bg-white py-6 px-3 rounded-[1.2rem] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.06)] text-center flex flex-col items-center border border-slate-100/60">
+                <div class="w-12 h-12 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center mb-3 shadow-md shadow-purple-500/30">
+                    <i class="fa-solid fa-desktop text-base -ml-1"></i><i class="fa-solid fa-mobile-screen text-[12px] -mb-2"></i>
+                </div>
+                <h4 class="font-extrabold text-[13.5px] text-[#1e293b] mb-1">All Devices</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-snug">Mobile, Tablet<br>& PC</p>
             </div>
-            <div class="bg-white py-4 px-1 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-                <div class="text-[#a570db] mb-1.5"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
-                <span class="text-[11px] font-extrabold text-slate-800 block">Ad-Free</span>
-                <span class="text-[9px] text-slate-400 font-medium block">Premium</span>
+            <div class="bg-white py-6 px-3 rounded-[1.2rem] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.06)] text-center flex flex-col items-center border border-slate-100/60">
+                <div class="w-12 h-12 rounded-full bg-[#ef4444] text-white flex items-center justify-center mb-3 shadow-md shadow-red-500/30">
+                    <i class="fa-solid fa-infinity text-xl"></i>
+                </div>
+                <h4 class="font-extrabold text-[13.5px] text-[#1e293b] mb-1">Unlimited</h4>
+                <p class="text-[11px] text-slate-500 font-medium leading-snug">No limits,<br>no restrictions</p>
+            </div>
+        </div>
+
+        <!-- HOW IT WORKS SECTION -->
+        <div class="bg-white rounded-[1.8rem] p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.06)] border border-slate-100 relative pt-2">
+            <div class="text-center mb-5">
+                <h3 class="text-[18px] font-extrabold text-[#1e293b]">How It Works</h3>
+                <div class="flex justify-center items-center gap-1.5 mt-1.5">
+                    <div class="w-5 h-1 rounded-full bg-[#94a3b8]"></div>
+                    <div class="w-1.5 h-1 rounded-full bg-[#6366f1]"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 relative">
+                <!-- SVG Wave Flow Line with 50% Opacity -->
+                <div class="absolute top-[16px] inset-x-10 pointer-events-none z-20 flex justify-center opacity-50">
+                    <svg class="w-full h-12 overflow-visible" viewBox="0 0 300 34" fill="none" preserveAspectRatio="none">
+                        <path d="M 22 18 Q 88 -6, 150 18 T 278 18" stroke="url(#waveGradient)" stroke-width="3" stroke-dasharray="5 5" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#6366f1" />
+                                <stop offset="50%" stop-color="#3b82f6" />
+                                <stop offset="100%" stop-color="#ec4899" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="bg-slate-50/95 p-3 rounded-xl border border-slate-100 flex flex-col items-center text-center relative shadow-sm">
+                    <span class="absolute top-2 right-2 w-4 h-4 bg-[#6366f1] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs z-30">1</span>
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#6366f1] to-[#8b5cf6] text-white flex items-center justify-center text-sm mb-2 shadow-md shadow-indigo-500/30 relative z-30">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <h4 class="font-extrabold text-[12px] text-slate-900 mb-0.5">Paste Link</h4>
+                    <p class="text-[9.5px] text-slate-500 font-medium leading-tight">Paste link above</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-50/95 p-3 rounded-xl border border-slate-100 flex flex-col items-center text-center relative shadow-sm">
+                    <span class="absolute top-2 right-2 w-4 h-4 bg-[#3b82f6] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs z-30">2</span>
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#3b82f6] to-[#10b981] text-white flex items-center justify-center text-sm mb-2 shadow-md shadow-blue-500/30 relative z-30">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                    <h4 class="font-extrabold text-[12px] text-slate-900 mb-0.5">Click Watch</h4>
+                    <p class="text-[9.5px] text-slate-500 font-medium leading-tight">Tap watch button</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-50/95 p-3 rounded-xl border border-slate-100 flex flex-col items-center text-center relative shadow-sm">
+                    <span class="absolute top-2 right-2 w-4 h-4 bg-[#ec4899] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs z-30">3</span>
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#ec4899] to-[#ff4b72] text-white flex items-center justify-center text-sm mb-2 shadow-md shadow-pink-500/30 relative z-30">
+                        <i class="fa-solid fa-tv"></i>
+                    </div>
+                    <h4 class="font-extrabold text-[12px] text-slate-900 mb-0.5">Enjoy Video</h4>
+                    <p class="text-[9.5px] text-slate-500 font-medium leading-tight">Stream no ads</p>
+                </div>
             </div>
         </div>
 
         <!-- Why Choose Us -->
-        <div class="pt-5 pb-2">
-            <h3 class="text-center text-[16px] font-extrabold text-slate-900 mb-4">Why Choose Us?</h3>
-            <div class="grid grid-cols-2 gap-3.5">
-                <div class="bg-[#f0f8f4] p-4 rounded-[1.2rem] text-center shadow-sm">
-                    <div class="bg-[#e2f1e9] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-[#469b6a]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
-                    <h4 class="font-bold text-[13px] text-slate-900 mb-1">Blazing Fast</h4>
-                    <p class="text-[10.5px] text-slate-600 font-medium leading-snug">Experience ultra fast streaming without buffering.</p>
+        <div class="pt-6 pb-2">
+            <div class="text-center mb-6">
+                <h3 class="text-[19px] font-extrabold text-[#1e293b]">Why Choose Us?</h3>
+                <div class="flex justify-center items-center gap-1.5 mt-2">
+                    <div class="w-6 h-1 rounded-full bg-[#94a3b8]"></div>
+                    <div class="w-1.5 h-1 rounded-full bg-[#6366f1]"></div>
                 </div>
-                <div class="bg-[#f2f8fe] p-4 rounded-[1.2rem] text-center shadow-sm">
-                    <div class="bg-[#e0effa] w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-[#4396e9]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-gradient-to-br from-[#eafaf1] to-[#f4fdf8] p-5 rounded-[1.2rem] flex items-center gap-4 relative overflow-hidden border border-emerald-100/50">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-[#10b981] opacity-[0.04] rounded-full"></div>
+                    <div class="w-12 h-12 rounded-full bg-[#10b981] text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20 z-10">
+                        <i class="fa-solid fa-rocket text-xl"></i>
                     </div>
-                    <h4 class="font-bold text-[13px] text-[#4396e9] mb-1">Totally Secure</h4>
-                    <p class="text-[10.5px] text-slate-600 font-medium leading-snug">We never save your links or files. Privacy first.</p>
+                    <div class="z-10">
+                        <h4 class="font-extrabold text-[14.5px] text-[#065f46] mb-1">Super Fast</h4>
+                        <p class="text-[11.5px] text-[#475569] font-medium leading-relaxed">Optimized servers for ultra-fast, buffer-free streaming experience.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-[#f5f3ff] to-[#faf5ff] p-5 rounded-[1.2rem] flex items-center gap-4 relative overflow-hidden border border-purple-100/50">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-[#8b5cf6] opacity-[0.04] rounded-full"></div>
+                    <div class="w-12 h-12 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-500/20 z-10">
+                        <i class="fa-solid fa-shield-halved text-xl"></i>
+                    </div>
+                    <div class="z-10">
+                        <h4 class="font-extrabold text-[14.5px] text-[#4c1d95] mb-1">Super Secure</h4>
+                        <p class="text-[11.5px] text-[#475569] font-medium leading-relaxed">We never save your links or files. Your privacy and safety are guaranteed.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Supported Content -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-3 mt-4 mb-4">
-            <div class="text-[#5cb97d] flex-shrink-0">
-                <svg class="w-9 h-9" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h2v12H4V6zm4 0h12a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2zm2 2v8h8V8h-8zm2 2h4v4h-4v-4z"></path></svg>
+        <!-- Supported Content Card -->
+        <div class="bg-gradient-to-br from-[#fffbeb] to-[#fffdf8] rounded-[1.2rem] p-5 border border-amber-100/50 flex items-center gap-4 relative overflow-hidden mt-3">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-[#f59e0b] opacity-[0.04] rounded-full"></div>
+            <div class="w-12 h-12 rounded-full bg-[#f59e0b] text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/20 z-10">
+                <i class="fa-solid fa-clapperboard text-[20px]"></i>
             </div>
-            <div class="flex-grow pl-1">
-                <h4 class="font-extrabold text-[14px] text-slate-900">Supported Content</h4>
-                <p class="text-[10.5px] text-slate-600 font-medium mt-0.5 leading-snug">We support all public TeraBox links including movies, series, shows, and more.</p>
+            <div class="z-10">
+                <h4 class="font-extrabold text-[15px] text-[#b45309]">Supported Content</h4>
+                <p class="text-[11.5px] text-[#475569] font-medium mt-0.5 leading-relaxed">We support all public TeraBox links including movies, series, shows and more.</p>
             </div>
         </div>
 
-        <!-- 3. BOTTOM ADVERTISEMENT SPACE -->
-        <div class="w-full h-[60px] rounded-xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mb-4 mt-4">
+        <!-- 3. BOTTOM ADVERTISEMENT SPACE 1 -->
+        <div class="w-full h-[60px] rounded-2xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mt-5">
             <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
-            <span class="text-slate-400 text-[8px]">(Bottom Banner Space)</span>
+            <span class="text-slate-400 text-[8px]">(Bottom Banner Space 1)</span>
+        </div>
+
+        <!-- Supported TeraBox Domains -->
+        <div class="pt-5 pb-2">
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div class="w-9 h-9 rounded-xl bg-[#eef2ff] text-[#6366f1] flex items-center justify-center flex-shrink-0 shadow-sm border border-[#e0e7ff]">
+                    <i class="fa-solid fa-globe text-[16px]"></i>
+                </div>
+                <h3 class="text-[17px] font-extrabold text-[#1e293b] leading-tight">Supported TeraBox<br>Domains</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#d1fae5] text-[#059669] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-[12px]"></i></div>
+                    <div class="leading-tight mt-0.5">
+                        <div class="text-[12.5px] font-bold text-slate-800">terabox.com</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Main TeraBox domain</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#d1fae5] text-[#059669] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-[12px]"></i></div>
+                    <div class="leading-tight mt-0.5">
+                        <div class="text-[12.5px] font-bold text-slate-800">terabox.app</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Official app domain</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#d1fae5] text-[#059669] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-[12px]"></i></div>
+                    <div class="leading-tight mt-0.5">
+                        <div class="text-[12.5px] font-bold text-slate-800">1024terabox.com</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Mirror site</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#d1fae5] text-[#059669] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-[12px]"></i></div>
+                    <div class="leading-tight mt-0.5">
+                        <div class="text-[12.5px] font-bold text-slate-800">1024tera.com</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Alternative domain</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#d1fae5] text-[#059669] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-[12px]"></i></div>
+                    <div class="leading-tight mt-0.5">
+                        <div class="text-[12.5px] font-bold text-slate-800">teraboxapp.com</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Mobile app links</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#d1fae5] text-[#059669] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-check text-[12px]"></i></div>
+                    <div class="leading-tight mt-0.5">
+                        <div class="text-[12.5px] font-bold text-slate-800">teraboxshare.com</div>
+                        <div class="text-[10px] text-slate-400 font-medium">Mirror site</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SQUARE ADVERTISEMENT SPACE (300x250) -->
+        <div class="w-full h-[250px] rounded-[1.2rem] border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mt-4 mb-4">
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
+            <span class="text-slate-400 text-[8px]">(Square Ad Space - 300x250)</span>
+        </div>
+
+        <!-- Sleek Custom Disclaimer Box (Updated Theme) -->
+        <div class="bg-gradient-to-br from-[#fef2f2] to-[#fffdfd] border border-red-100/60 rounded-[1.2rem] p-5 flex gap-4 items-start relative overflow-hidden mb-4">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-[#ef4444] opacity-[0.04] rounded-full pointer-events-none"></div>
+            <div class="w-10 h-10 rounded-full bg-[#fee2e2] text-[#ef4444] flex items-center justify-center flex-shrink-0 shadow-sm border border-red-100 z-10">
+                <i class="fa-solid fa-circle-info text-[18px]"></i>
+            </div>
+            <div class="z-10 pt-0.5">
+                <p class="text-slate-500 text-[11px] font-medium leading-relaxed">
+                    <strong class="font-extrabold text-[#b91c1c]">Disclaimer:</strong> Terabox Video Player does not store or host any files or media on its servers. This platform solely functions as a third-party utility to stream and download publicly accessible links provided by users. We operate independently and hold no official endorsement or affiliation with TeraBox, terabox.app, or its parent companies.
+                </p>
+            </div>
+        </div>
+
+        <!-- Light Stats Footer -->
+        <div class="bg-white rounded-[1.8rem] py-7 px-4 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)] border border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-y-7 gap-x-2 mt-4 relative overflow-hidden">
+            <!-- Subtle background glow for premium feel -->
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-50 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
+            <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-50 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
+
+            <div class="flex items-center gap-3 px-2 relative z-10">
+                <div class="w-11 h-11 rounded-full bg-[#ecfdf5] text-[#10b981] flex items-center justify-center flex-shrink-0 text-[18px] shadow-sm border border-emerald-50">
+                    <i class="fa-solid fa-user-group"></i>
+                </div>
+                <div>
+                    <div class="text-[17.5px] font-extrabold text-slate-800 leading-tight">2.5K+</div>
+                    <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">Happy Users</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 px-2 relative z-10">
+                <div class="w-11 h-11 rounded-full bg-[#fdf2f8] text-[#ec4899] flex items-center justify-center flex-shrink-0 text-[18px] shadow-sm border border-pink-50">
+                    <i class="fa-solid fa-circle-play"></i>
+                </div>
+                <div>
+                    <div class="text-[17.5px] font-extrabold text-slate-800 leading-tight">10K+</div>
+                    <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">Videos Streamed</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 px-2 relative z-10">
+                <div class="w-11 h-11 rounded-full bg-[#eff6ff] text-[#3b82f6] flex items-center justify-center flex-shrink-0 text-[18px] shadow-sm border border-blue-50">
+                    <i class="fa-solid fa-cloud"></i>
+                </div>
+                <div>
+                    <div class="text-[17.5px] font-extrabold text-slate-800 leading-tight">99.9%</div>
+                    <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">Uptime</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 px-2 relative z-10">
+                <div class="w-11 h-11 rounded-full bg-[#fffbeb] text-[#f59e0b] flex items-center justify-center flex-shrink-0 text-[18px] shadow-sm border border-amber-50">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div>
+                    <div class="text-[17.5px] font-extrabold text-slate-800 leading-tight">100%</div>
+                    <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">Free to Use</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Credits -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-7 pb-2 border-t border-slate-100 mt-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#6366f1] via-[#a855f7] to-[#ec4899] flex items-center justify-center text-white text-[14px] shadow-sm">
+                    <i class="fa-solid fa-tv"></i>
+                </div>
+                <div class="leading-tight mt-0.5">
+                    <h5 class="text-[14.5px] font-extrabold text-[#1e293b]">TERABOX VIDEO PLAYER</h5>
+                    <span class="text-[10px] font-semibold text-slate-400">Link Player</span>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-[12px] text-slate-500 font-medium">© 2026 terabox-video-player.github.io.<br class="sm:hidden"> All rights reserved.</p>
+            </div>
+
+            <div class="bg-[#f0fdf4] text-[#16a34a] px-4 py-2 rounded-[0.5rem] text-[11.5px] font-bold flex items-center gap-1.5 border border-[#bbf7d0]">
+                <i class="fa-solid fa-lock text-[11px]"></i> Secure & Trusted
+            </div>
         </div>
     </main>
 
     <!-- Floating Telegram Button -->
-    <a href="https://mtchannels.github.io" target="_blank" class="fixed bottom-5 right-5 bg-[#0088cc] hover:bg-[#0077b5] text-white w-11 h-11 rounded-full shadow-lg flex items-center justify-center transition transform hover:scale-105 z-50">
-        <i class="fa-brands fa-telegram text-xl"></i>
+    <a href="https://mtchannels.github.io" target="_blank" class="fixed bottom-6 right-6 bg-[#0088cc] hover:bg-[#0077b5] text-white w-[50px] h-[50px] rounded-full shadow-2xl flex items-center justify-center transition transform hover:scale-110 z-30 border-[3px] border-white">
+        <i class="fa-brands fa-telegram text-[26px] pr-0.5"></i>
     </a>
 
     <script>
+        // Sidebar Toggle Function
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+            setTimeout(() => {
+                overlay.classList.toggle('opacity-0');
+            }, 10);
+        }
+
         async function pasteClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
@@ -207,22 +530,15 @@
                 return;
             }
 
-            // Enhanced Loading Animation Steps
-            btnText.innerHTML = "Connecting to TeraBox...";
+            btnText.innerHTML = "Connecting...";
             loader.style.display = "block";
             resultDiv.innerHTML = "";
 
             setTimeout(() => {
                 if(btnText.innerHTML.includes("Connecting")) {
-                    btnText.innerHTML = "Bypassing Security...";
+                    btnText.innerHTML = "Bypassing...";
                 }
             }, 800);
-
-            setTimeout(() => {
-                if(btnText.innerHTML.includes("Security")) {
-                    btnText.innerHTML = "Optimizing HD Stream...";
-                }
-            }, 1600);
 
             try {
                 let response = await fetch(`https://api.freebyorbit.workers.dev/api/v1/data?url=${encodeURIComponent(url)}`);
@@ -236,33 +552,33 @@
                     let sizeMb = sizeBytes ? (parseInt(sizeBytes) / (1024 * 1024)).toFixed(2) + " MB" : "";
 
                     resultDiv.innerHTML = `
-                        <div class="bg-white p-4 rounded-xl shadow-md border border-slate-200">
-                            ${thumbUrl ? `<div class="relative w-full h-48 bg-black rounded-lg overflow-hidden mb-3"><img src="${thumbUrl}" class="w-full h-full object-cover opacity-80"></div>` : ''}
-                            <p class="font-extrabold text-slate-800 text-[14px] mb-2" style="word-break: break-all;"><b>File:</b> ${fileName}</p>
-                            ${sizeMb ? `<p class="text-[11px] text-slate-500 font-bold mb-3">Size: ${sizeMb}</p>` : ''}
-                            <div class="space-y-2 mt-4">
-                                <a href="${streamUrl}" target="_blank" class="block w-full bg-[#10b981] hover:bg-[#059669] text-white font-extrabold text-[14px] py-3 rounded-lg text-center shadow-md transition cursor-pointer">▶ Play Now</a>
-                                <a href="${streamUrl}" download class="block w-full bg-[#17a2b8] hover:bg-[#138496] text-white font-extrabold text-[14px] py-3 rounded-lg text-center shadow-md transition cursor-pointer">⬇ Download Video</a>
+                        <div class="bg-white p-5 rounded-[1.2rem] shadow-lg border border-slate-100 mt-4">
+                            ${thumbUrl ? `<div class="relative w-full h-48 bg-black rounded-xl overflow-hidden mb-4"><img src="${thumbUrl}" class="w-full h-full object-cover opacity-90"></div>` : ''}
+                            <p class="font-extrabold text-slate-800 text-[15px] mb-1.5" style="word-break: break-all;">${fileName}</p>
+                            ${sizeMb ? `<p class="text-[12px] text-slate-500 font-semibold mb-4">Size: ${sizeMb}</p>` : ''}
+                            <div class="space-y-3">
+                                <a href="${streamUrl}" target="_blank" class="block w-full bg-[#6a5ced] hover:bg-[#5a4ddb] text-white font-bold text-[14.5px] py-3.5 rounded-xl text-center shadow-md transition cursor-pointer">▶ Play Video Now</a>
+                                <a href="${streamUrl}" download class="block w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[13.5px] py-3 rounded-xl text-center transition cursor-pointer">⬇ Download</a>
                             </div>
                         </div>
                     `;
                 } else {
-                    resultDiv.innerHTML = "<div class='bg-white p-4 rounded-xl shadow text-center text-red-500 font-bold text-sm'>डेटा मिळाला नाही, लिंक तपासून पहा.</div>";
+                    resultDiv.innerHTML = "<div class='bg-red-50 p-4 rounded-[1.2rem] shadow-sm text-center text-red-600 font-bold text-[13.5px] mt-4 border border-red-100'>डेटा मिळाला नाही, लिंक तपासून पहा.</div>";
                 }
             } catch (error) {
-                resultDiv.innerHTML = "<div class='bg-white p-4 rounded-xl shadow text-center text-red-500 font-bold text-sm'>काहीतरी तांत्रिक अडचण आली आहे.</div>";
+                resultDiv.innerHTML = "<div class='bg-red-50 p-4 rounded-[1.2rem] shadow-sm text-center text-red-600 font-bold text-[13.5px] mt-4 border border-red-100'>काहीतरी तांत्रिक अडचण आली आहे.</div>";
             }
 
-            btnText.innerHTML = "Play / Download Now";
+            btnText.innerHTML = `<i class="fa-solid fa-play text-sm"></i> Watch Now`;
             loader.style.display = "none";
         }
 
-        // Live Users Count Randomizer Script
+        // Live Counter (220 to 380 range)
         setInterval(() => {
             const countElem = document.getElementById('liveCount');
             if (countElem) {
-                let randomNum = Math.floor(Math.random() * (1800 - 1300 + 1)) + 1300;
-                countElem.innerText = randomNum.toLocaleString();
+                let randomNum = Math.floor(Math.random() * (380 - 220 + 1)) + 220;
+                countElem.innerText = randomNum;
             }
         }, 4000);
     </script>
