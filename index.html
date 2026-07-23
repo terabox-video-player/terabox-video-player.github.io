@@ -37,8 +37,23 @@
         .watch-btn {
             background: linear-gradient(to right, #ff9a44 0%, #ff3a7c 100%);
             box-shadow: 0 12px 25px -8px rgba(255, 58, 124, 0.5);
+            transition: all 0.3s ease;
         }
         .watch-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+        /* नवीन: एकदम भारी लोडिंग ॲनिमेशन इफेक्ट */
+        .btn-processing {
+            background: linear-gradient(-45deg, #ff9a44, #ff3a7c, #a855f7, #4f46e5);
+            background-size: 300% 300%;
+            animation: gradientAnim 1.5s ease infinite;
+            pointer-events: none;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.5);
+        }
+        @keyframes gradientAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         /* Ad Placeholder Pattern */
         .ad-placeholder {
@@ -54,9 +69,6 @@
         #sidebar.open {
             transform: translateX(0);
         }
-
-        .loader { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="pb-10 relative z-0">
@@ -115,7 +127,9 @@
                     <span class="text-[8.5px] font-bold text-slate-400 tracking-wider block uppercase">Link Player</span>
                 </div>
             </div>
+            
             <div class="flex items-center gap-1.5 flex-shrink-0">
+                <!-- Live Counter -->
                 <div class="flex items-center gap-1.5 bg-gradient-to-r from-purple-50 to-pink-50 text-[#7c3aed] px-2.5 py-1 rounded-xl border border-purple-200/60 shadow-xs">
                     <div class="w-2 h-2 bg-[#ec4899] rounded-full animate-pulse flex-shrink-0"></div>
                     <div class="flex flex-col items-center leading-tight">
@@ -123,6 +137,12 @@
                         <span class="text-[7px] font-black text-rose-500 uppercase tracking-widest text-center w-full">Live</span>
                     </div>
                 </div>
+
+                <!-- Feature 4: Bookmark / Saved Button (Moved here for clean UI) -->
+                <button onclick="toggleBookmark()" id="bookmark-btn" title="Saved Link" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer border border-slate-200">
+                    <i class="fa-regular fa-star text-[14px]" id="bookmark-icon"></i>
+                </button>
+
                 <!-- Menu Button -->
                 <button onclick="toggleMenu()" class="w-9 h-9 rounded-xl bg-[#6a5ced] hover:bg-[#5a4ddb] text-white flex items-center justify-center shadow-md transition cursor-pointer">
                     <i class="fa-solid fa-bars text-[14px]"></i>
@@ -140,18 +160,15 @@
                 <span class="text-gradient-title">Links Instantly</span>
             </h2>
 
-            <!-- Underline Dash -->
             <div class="flex justify-center items-center gap-1.5 pt-1">
                 <div class="w-9 h-1 rounded-full bg-[#6a5ced]"></div>
                 <div class="w-1.5 h-1 rounded-full bg-[#6a5ced]"></div>
             </div>
 
-            <!-- Highlighted Subtitle -->
             <p class="text-[#64748b] text-[13px] font-medium max-w-[300px] mx-auto leading-relaxed mt-3">
                 Paste your TeraBox link below and watch videos online instantly <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ff4b72] to-[#7a5af8]">Without Any Ads</span>.
             </p>
 
-            <!-- 3 Top Pills -->
             <div class="flex justify-center items-center gap-2.5 pt-2 flex-wrap">
                 <span class="bg-[#e6fcf2] text-[#059669] px-3.5 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 shadow-sm border border-[#d1fae5]">
                     <i class="fa-solid fa-bolt text-[#10b981]"></i> Ultra Fast
@@ -171,8 +188,8 @@
             <span class="text-slate-400 text-[8px]">(Top Banner Space)</span>
         </div>
 
-        <!-- Main Input Card -->
-        <div class="main-card rounded-[1.8rem] p-6 text-white">
+        <!-- Main Input Card (Cleaned UI) -->
+        <div class="main-card rounded-[1.8rem] p-6 text-white relative">
             <div class="flex items-center gap-3 mb-5">
                 <div class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 backdrop-blur-sm shadow-inner">
                     <i class="fa-solid fa-link text-white text-[16px]"></i>
@@ -188,12 +205,25 @@
                     <div class="absolute left-4 text-slate-400">
                         <i class="fa-solid fa-link text-[14px]"></i>
                     </div>
-                    <input type="text" id="teraboxUrl" placeholder="https://terabox.com/s/xxxxxxxxx" class="w-full pl-11 pr-20 py-3.5 outline-none text-slate-700 text-[14px] font-semibold placeholder-slate-400 bg-transparent rounded-full">
-                    <button onclick="pasteClipboard()" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 text-[#6a5ced] font-bold text-[14px] bg-transparent hover:bg-slate-50 rounded-full transition cursor-pointer">Paste</button>
+                    <!-- Input padding adjusted to prevent text hiding behind buttons -->
+                    <input type="text" id="teraboxUrl" oninput="checkDomain(this.value)" placeholder="https://terabox.com/s/xxxxxxxxx" class="w-full pl-11 pr-[105px] py-3.5 outline-none text-slate-700 text-[14px] font-semibold placeholder-slate-400 bg-transparent rounded-full">
+                    
+                    <!-- Feature 1: Clear Button (✖) & Paste -->
+                    <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+                        <button id="clear-btn" onclick="clearInput()" class="w-7 h-7 text-slate-400 hover:text-red-500 rounded-full flex items-center justify-center transition hidden cursor-pointer">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                        <button onclick="pasteClipboard()" class="px-3.5 py-1.5 text-[#6a5ced] font-bold text-[14px] bg-transparent hover:bg-slate-50 rounded-full transition cursor-pointer">Paste</button>
+                    </div>
                 </div>
 
+                <!-- Feature 3: Updated Domain Status Badge (Only "Verified Domain") -->
+                <div id="domain-badge" class="hidden items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-400/30 rounded-lg text-[11px] text-emerald-100 font-semibold w-fit">
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i> <span id="domain-text">Verified Domain</span>
+                </div>
+
+                <!-- Feature 2: Watch Button with Animated Classes ready -->
                 <button id="fetch-btn" onclick="fetchData()" class="w-full watch-btn text-white font-extrabold text-[16px] py-4 rounded-xl transition flex justify-center items-center gap-2 cursor-pointer border-none mt-2">
-                    <div id="btn-loader" class="loader"></div>
                     <span id="btn-text" class="flex items-center gap-2.5"><i class="fa-solid fa-play text-sm"></i> Watch Now</span>
                 </button>
             </div>
@@ -349,7 +379,7 @@
             </div>
         </div>
 
-        <!-- ADVERTISEMENT SPACE (300x250) - Added right below Supported Content & above Domains -->
+        <!-- ADVERTISEMENT SPACE (300x250) -->
         <div class="w-full h-[250px] rounded-[1.2rem] border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mt-4 mb-4">
             <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
             <span class="text-slate-400 text-[8px]">(Square Ad Space - 300x250)</span>
@@ -410,7 +440,7 @@
             </div>
         </div>
 
-        <!-- BOTTOM ADVERTISEMENT SPACE (Above Disclaimer) -->
+        <!-- BOTTOM ADVERTISEMENT SPACE -->
         <div class="w-full h-[60px] rounded-2xl border-2 border-dashed border-slate-300 ad-placeholder flex flex-col items-center justify-center opacity-70 mt-4 mb-4">
             <span class="text-slate-500 text-[10px] font-bold tracking-widest uppercase">Advertisement</span>
             <span class="text-slate-400 text-[8px]">(Bottom Banner Space)</span>
@@ -500,7 +530,6 @@
     </a>
 
     <script>
-        // Sidebar Toggle Function
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -511,36 +540,117 @@
             }, 10);
         }
 
+        function clearInput() {
+            const input = document.getElementById('teraboxUrl');
+            input.value = '';
+            document.getElementById('clear-btn').classList.add('hidden');
+            document.getElementById('domain-badge').classList.add('hidden');
+        }
+
+        // 'Verified Domain' update
+        function checkDomain(val) {
+            const clearBtn = document.getElementById('clear-btn');
+            const domainBadge = document.getElementById('domain-badge');
+            const domainText = document.getElementById('domain-text');
+
+            if (val.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+                domainBadge.classList.remove('hidden');
+                domainBadge.classList.add('flex');
+                if (val.includes('terabox') || val.includes('tera') || val.includes('1024')) {
+                    domainText.innerText = "Verified Domain";
+                } else {
+                    domainText.innerText = "Custom Link";
+                }
+            } else {
+                clearBtn.classList.add('hidden');
+                domainBadge.classList.add('hidden');
+            }
+        }
+
+        // Bookmark Logic (Button is now in the top header)
+        function toggleBookmark() {
+            const icon = document.getElementById('bookmark-icon');
+            const btn = document.getElementById('bookmark-btn');
+            const url = document.getElementById('teraboxUrl').value.trim();
+            if(!url) {
+                alert('कृपया सेव्ह करण्यासाठी आधी लिंक टाका!');
+                return;
+            }
+            
+            if(icon.classList.contains('fa-regular')) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+                icon.classList.add('text-purple-600');
+                btn.classList.replace('bg-slate-100', 'bg-purple-100');
+                btn.classList.replace('border-slate-200', 'border-purple-200');
+                localStorage.setItem('saved_terabox_link', url);
+                alert('लिंक यशस्वीरित्या सेव्ह (Bookmark) झाली!');
+            } else {
+                icon.classList.remove('fa-solid');
+                icon.classList.remove('text-purple-600');
+                icon.classList.add('fa-regular');
+                btn.classList.replace('bg-purple-100', 'bg-slate-100');
+                btn.classList.replace('border-purple-200', 'border-slate-200');
+                localStorage.removeItem('saved_terabox_link');
+                alert('बूकमार्क काढून टाकला आहे.');
+            }
+        }
+
+        // Load Saved Bookmark on Page Load
+        window.onload = function() {
+            const saved = localStorage.getItem('saved_terabox_link');
+            if(saved) {
+                document.getElementById('teraboxUrl').value = saved;
+                
+                const icon = document.getElementById('bookmark-icon');
+                const btn = document.getElementById('bookmark-btn');
+                
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+                icon.classList.add('text-purple-600');
+                btn.classList.replace('bg-slate-100', 'bg-purple-100');
+                btn.classList.replace('border-slate-200', 'border-purple-200');
+                
+                checkDomain(saved);
+            }
+        };
+
         async function pasteClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
                 document.getElementById('teraboxUrl').value = text;
+                checkDomain(text);
             } catch (err) { alert('Paste manually.'); }
         }
 
+        // Feature: Custom Animated Loading Messages
         async function fetchData() {
             let url = document.getElementById('teraboxUrl').value.trim();
             let resultDiv = document.getElementById('result');
             let btnText = document.getElementById('btn-text');
-            let loader = document.getElementById('btn-loader');
+            let fetchBtn = document.getElementById('fetch-btn');
 
             if(!url) {
                 alert('कृपया आधी Terabox ची लिंक टाका!');
                 return;
             }
 
-            btnText.innerHTML = "Connecting...";
-            loader.style.display = "block";
+            // Start Animation Effect
+            fetchBtn.classList.add('btn-processing');
             resultDiv.innerHTML = "";
 
-            setTimeout(() => {
-                if(btnText.innerHTML.includes("Connecting")) {
-                    btnText.innerHTML = "Bypassing...";
-                }
-            }, 800);
+            // Cool sequence with FontAwesome animations
+            btnText.innerHTML = `<i class="fa-solid fa-satellite-dish fa-fade"></i> Secure Connecting...`;
+            await new Promise(r => setTimeout(r, 600));
+            
+            btnText.innerHTML = `<i class="fa-solid fa-shield-cat fa-bounce"></i> Bypassing Limits...`;
+            await new Promise(r => setTimeout(r, 700));
+            
+            btnText.innerHTML = `<i class="fa-solid fa-bolt fa-beat"></i> Extracting Stream...`;
+            await new Promise(r => setTimeout(r, 600));
 
             try {
-                // क्लाउडफ्लेअर प्रॉक्सी लिंक (इथे मूळ API पूर्णपणे लपलेली आहे)
                 let myProxy = "https://bold-sky.terabox-stream.workers.dev/?url=";
 
                 let response = await fetch(myProxy + encodeURIComponent(url));
@@ -553,7 +663,6 @@
                     let sizeBytes = data.result.data[0].size;
                     let sizeMb = sizeBytes ? (parseInt(sizeBytes) / (1024 * 1024)).toFixed(2) + " MB" : "";
 
-                    // थंबनेलसह अचूक आऊटपुट कार्ड
                     resultDiv.innerHTML = `
                         <div class="bg-white p-5 rounded-[1.2rem] shadow-lg border border-slate-100 mt-4">
                             ${thumbUrl ? `<div class="relative w-full h-48 bg-black rounded-xl overflow-hidden mb-4"><img src="${thumbUrl}" class="w-full h-full object-cover opacity-90"></div>` : ''}
@@ -565,6 +674,7 @@
                             </div>
                         </div>
                     `;
+                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else {
                     resultDiv.innerHTML = "<div class='bg-red-50 p-4 rounded-[1.2rem] shadow-sm text-center text-red-600 font-bold text-[13.5px] mt-4 border border-red-100'>डेटा मिळाला नाही, लिंक तपासून पहा.</div>";
                 }
@@ -572,11 +682,12 @@
                 resultDiv.innerHTML = "<div class='bg-red-50 p-4 rounded-[1.2rem] shadow-sm text-center text-red-600 font-bold text-[13.5px] mt-4 border border-red-100'>काहीतरी तांत्रिक अडचण आली आहे.</div>";
             }
 
+            // End Animation Effect
+            fetchBtn.classList.remove('btn-processing');
             btnText.innerHTML = `<i class="fa-solid fa-play text-sm"></i> Watch Now`;
-            loader.style.display = "none";
         }
 
-        // हळूहळू (Smooth) आकडे बदलणारा लाईव्ह काउंटर
+        // तुझा ओरिजनल लाईव्ह काउंटर
         setInterval(() => {
             const countElem = document.getElementById('liveCount');
             if (countElem) {
@@ -594,7 +705,7 @@
                     minLimit = 190; maxLimit = 370;
                 }
 
-                let change = Math.floor(Math.random() * 3) - 1; // -1, 0, किंवा +1
+                let change = Math.floor(Math.random() * 3) - 1; 
                 let newNum = currentNum + change;
 
                 if (newNum < minLimit) newNum = minLimit;
